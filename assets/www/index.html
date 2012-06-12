@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>AVF Demo</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="utf-8">
+
+  <link href="css/jquery.mobile-1.1.0.min.css" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" media="all and (max-device-width: 480px)" href="css/iphone.css"> 
+  <link rel="stylesheet" media="all and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)" href="css/ipad-portrait.css"> 
+  <link rel="stylesheet" media="all and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)" href="css/ipad-landscape.css"> 
+  <link rel="stylesheet" media="all and (min-device-width: 1025px)" href="css/ipad-landscape.css"> 
+  <link href="css/video.css" rel="stylesheet">
+
+  <script type="text/javascript" charset="utf-8" src="js/cordova-1.8.0.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/jquery.mobile-1.1.0.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/video.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/avf-demo-main.js"></script>
+
+  <script type="text/javascript">
+	
+	function onBodyLoad()
+	{		
+		document.addEventListener("deviceready", onDeviceReady, false);
+	}
+	
+	function onDeviceReady()
+	{
+		//navigator.notification.alert("Cordova is working")
+	}
+    
+  </script>
+  </head>
+  <body onload="onBodyLoad()">
+      <div data-role="page">
+          
+          <div data-role="header">
+              <h1>AVF Demo</h1>
+          </div><!-- /header -->
+          
+          <div data-role="content">	
+            
+            <div class="cta">
+              <video id="ctaVideo" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="100%" poster="media/avf-demo-poster.png" onclick="this.play();">
+                <source src="media/avf-demo.mp4" type='video/mp4'>
+                <source src="media/avf-demo.WebM" type='video/webm'>
+              </video>
+            </div>
+              
+            <div class="contentDiv">
+              <h3 class="titleText">CRUD Apps</h3>
+                <a href="https://github.com/atljeremy/Bill-Planner"><div data-role="button">BillPlanner GitHub Repo</div></a>
+                <a href="https://atljeremy.cloudant.com/billplanner/_design/billplanner/index.html"><div data-role="button">BillPlanner Live Code</div></a>
+            </div>
+          
+            <div class="contentDiv">
+              <h3 class="titleText">iOS/Android Native Feature Demos</h3>
+                <div data-role="button" id="notification"> Notification </div>
+                <div data-role="button" id="geolocation"> Geolocation </div>
+                <div data-role="button" id="contacts"> Contacts </div>
+                <div data-role="button"><a href="photo.html"> Camera/Photos </a></div>
+                <div id="geolocationDiv"></div>
+            </div>
+          
+            <div class="contentDiv">
+              <h3 class="titleText">Developer Info/Research</h3>
+              <h4>Information:</h4>
+              <ul class="moveUp listNone">
+                <li>Name: Jeremy Fox</li>
+                <li>Course: AVF1206</li>
+              </ul>
+              <h4>Research:</h4>
+              <ul class="moveUp listNone">
+                <li><a href="#">Week 1: Discussion Question 1</a></li>
+                <li><a href="#">Week 2: Discussion Question 2</a></li>
+                <li><a href="#">Week 3: Discussion Question 3</a></li>
+              </ul>
+            </div>
+              
+          </div><!-- /content -->
+      </div><!-- /page -->
+  </body>
+</html>
