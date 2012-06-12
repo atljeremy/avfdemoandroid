@@ -19,19 +19,18 @@ contactsBtn.live('live', function(){
 var pictureSource;
 var destinationType;
 
-$('#photoPage').bind('pageshow', onDeviceReady(event));
-
-function onDeviceReady(event) {
+$('#photoPage').live('pageshow', function(event, ui){
     alert("PHOTOS PAGE IS READY!!!!!!!!!!!!!");
     pictureSource=navigator.camera.PictureSourceType;
     destinationType=navigator.camera.DestinationType;
-}
+});
 
 function onPhotoDataSuccess(imageData) {
 
     var smallImage = document.getElementById('smallImage');
     smallImage.style.display = 'block';
     smallImage.src = "data:image/jpeg;base64," + imageData;
+}
 
 function onPhotoURISuccess(imageURI) {
 
@@ -41,19 +40,19 @@ function onPhotoURISuccess(imageURI) {
 }
 
 var capturePhoto = function() {
-
+    alert("CAPTURE PHOTO");
     navigator.camera.getPicture(onPhotoDataSuccess, photosOnFail, { quality: 50,
         destinationType: destinationType.DATA_URL });
 }
 
 var capturePhotoEdit = function() {
-
+    alert("CAPTURE PHOTO EDIT");
     navigator.camera.getPicture(onPhotoDataSuccess, photosOnFail, { quality: 20, allowEdit: true,
         destinationType: destinationType.DATA_URL });
 }
 
 var getPhoto = function(source) {
-
+    alert("GET PHOTO + SOURCE: " + source);
     navigator.camera.getPicture(onPhotoURISuccess, photosOnFail, { quality: 50,
         destinationType: destinationType.FILE_URI,
         sourceType: source });
@@ -63,17 +62,17 @@ var photosOnFail = function(message) {
     alert('Failed because: ' + message);
 }
 
-var capturePhotoBtn = $("#capturePhoto");
-capturePhotoBtn.live('click', capturePhoto());
+$("#capturePhoto")    .live('click', capturePhoto);
 
-var capturePhotoEditBtn = $("#capturePhotoEdit");
-capturePhotoEditBtn.live('click', capturePhotoEdit());
+$("#capturePhotoEdit").live('click', capturePhotoEdit);
 
-var getPhotoLibraryBtn = $("#getPhotoLibrary");
-getPhotoLibraryBtn.live('click', getPhoto(pictureSource.PHOTOLIBRARY));
+$("#getPhotoLibrary") .live('click', function(){
+    getPhoto(pictureSource.PHOTOLIBRARY);
+});
 
-var getPhotoAlbumBtn = $("#getPhotoAlbum");
-getPhotoAlbumBtn.live('click', getPhoto(pictureSource.SAVEDPHOTOALBUM));
+$("#getPhotoAlbum")   .live('click', function(){
+    getPhoto(pictureSource.SAVEDPHOTOALBUM);
+});
 
 //*********************************************************************
 // NOTIFICATIONS
@@ -114,9 +113,9 @@ var geoOnSuccess = function(position) {
 
 var geoOnError = function(error) {
     alert('code: ' + error.code    + '\n' +
-       'message: ' + error.message + '\n');
+        'message: ' + error.message + '\n');
 }
 
 geolocationBtn.live('click', function(){
-  navigator.geolocation.getCurrentPosition(geoOnSuccess, geoOnError, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+    navigator.geolocation.getCurrentPosition(geoOnSuccess, geoOnError, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
 });
