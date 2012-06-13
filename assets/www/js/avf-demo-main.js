@@ -8,9 +8,136 @@
 //*********************************************************************
 // CONTACTS
 //*********************************************************************
-var contactsBtn = $('#notification');
-contactsBtn.live('live', function(){
+// FIND A CONTACT ***************************************
+var options;
+var fields = ["displayName", "name", "phoneNumbers"];
+var newContactName;
+var newContactDisplayName;
+var newContactNote;
+var newContactPhone;
 
+$('#contactsPage').live('pageshow', function(event, ui){
+
+    // Uncomment For Debugging
+    // alert("FIND CONTACT PAGE READY");
+
+    options               = new ContactFindOptions();
+    contactsName          = $("#contactInput");
+    newContactName        = $("#createContactInput");
+    newContactDisplayName = $("#createContactDisplayName");
+    newContactNote        = $("#createContactNote");
+    newContactPhone       = $("#createContactPhone");
+});
+
+function focusTextField(){
+
+    contactsName.focus();
+}
+
+function findContactOnSuccess(contacts) {
+
+    if (contacts != null && contacts.length > 0) {
+        for (var i=0; i<contacts.length; i++) {
+            var phones = (contacts[i].phoneNumbers != null ? contacts[i].phoneNumbers : "No Phone Numbers");
+
+            var setPhones = function(){
+                if (phones != null && typeof(phones) != "string" && phones.length >= 1) {
+
+                    var phoneStringToReturn = "";
+
+                    for (index in phones) {
+                        if (index == phones.length - 1) {
+                            phoneStringToReturn += phones[index].value;
+                        } else {
+                            phoneStringToReturn += phones[index].value + ", ";
+                        }
+                    }
+
+                    return phoneStringToReturn;
+                } else {
+                    return phones;
+                }
+            }
+            $("#contactsDiv").append("Name: "            + contacts[i].name.formatted     + " <br /> " +
+                "Phone Number(s): " + setPhones() + " <br /> " +
+                "<hr>");
+        }
+    } else {
+        navigator.notification.alert(
+            'No Contacts Found For: ' + options.filter,
+            focusTextField,
+            'Sorry',
+            'Ok'
+        );
+    }
+}
+
+function findContactOnError(contactError) {
+
+    alert('Sorry! An Error has occurred. ' + contactError);
+}
+
+$('#findContact').live('click', function() {
+
+    options.filter = contactsName.val();
+    options.multiple = true;
+    if (options.filter != null && options.filter.length > 0){
+        navigator.contacts.find(fields, findContactOnSuccess, findContactOnError, options);
+    } else {
+        navigator.notification.alert(
+            'Please enter a name to search for contacts.',
+            focusTextField,
+            'Oops!',
+            'Ok'
+        );
+    }
+});
+
+// STORE A CONTACT ***************************************
+var focusNewContactNameField = function(){
+    newContactName.focus();
+}
+
+var newContactSuccess = function(){
+    navigator.notification.alert(
+        'Contact Added Successfully!',
+        focusNewContactNameField,
+        'Success',
+        'Ok'
+    );
+}
+
+var newContactError = function(error){
+    navigator.notification.alert(
+        'Contact could not be saved. ' + error,
+        focusNewContactNameField,
+        'Error',
+        'Ok'
+    );
+}
+
+$('#createContact').live('click', function() {
+
+    if (newContactName.val()        == "" ||
+        newContactDisplayName.val() == "" ||
+        newContactNote.val()        == "" ||
+        newContactPhone.val()       == "") {
+
+        navigator.notification.alert(
+            'All fields are required.',
+            focusNewContactNameField,
+            'Error',
+            'Ok'
+        );
+    } else {
+        var myContact = navigator.contacts.create({
+            "name"        : newContactName.val(),
+            "displayName" : newContactDisplayName.val(),
+            "note"        : newContactNote.val(),
+            "phoneNumbers": [ new ContactField('default', newContactPhone.val(), 'true' ) ]
+        });
+        myContact.save(newContactSuccess, newContactError);
+    }
 });
 
 //*********************************************************************
@@ -20,7 +147,10 @@ var pictureSource;
 var destinationType;
 
 $('#photoPage').live('pageshow', function(event, ui){
-    alert("PHOTOS PAGE IS READY!!!!!!!!!!!!!");
+
+    // Uncomment For Debugging
+    // alert("PHOTO PAGE IS READY!");
+
     pictureSource=navigator.camera.PictureSourceType;
     destinationType=navigator.camera.DestinationType;
 });
@@ -40,19 +170,19 @@ function onPhotoURISuccess(imageURI) {
 }
 
 var capturePhoto = function() {
-    alert("CAPTURE PHOTO");
+
     navigator.camera.getPicture(onPhotoDataSuccess, photosOnFail, { quality: 50,
         destinationType: destinationType.DATA_URL });
 }
 
 var capturePhotoEdit = function() {
-    alert("CAPTURE PHOTO EDIT");
+
     navigator.camera.getPicture(onPhotoDataSuccess, photosOnFail, { quality: 20, allowEdit: true,
         destinationType: destinationType.DATA_URL });
 }
 
 var getPhoto = function(source) {
-    alert("GET PHOTO + SOURCE: " + source);
+
     navigator.camera.getPicture(onPhotoURISuccess, photosOnFail, { quality: 50,
         destinationType: destinationType.FILE_URI,
         sourceType: source });
@@ -87,7 +217,7 @@ notificationBtn.live('click', function(){
 
     navigator.notification.alert(
         'You are the winner!',  // message
-        alertDismissed(),         // callback
+        alertDismissed(),       // callback
         'Game Over',            // title
         'Done'                  // buttonName
     );
@@ -96,11 +226,15 @@ notificationBtn.live('click', function(){
 //*********************************************************************
 // GEOLOCATION
 //*********************************************************************
-var geolocationBtn = $('#geolocation');
+$('#geolocationPage').live('pageshow', function(event, ui){
+
+    // Uncomment For Debugging
+    // alert("GEOLOCATION PAGE IS READY!");
+});
 
 var geoOnSuccess = function(position) {
     var geolocationDiv = $('#geolocationDiv');
-    geolocationDiv.append( 'Latitude: '           + position.coords.latitude              + '<br />' +
+    geolocationDiv.append( 'Latitude: ' + position.coords.latitude + '<br />' +
         'Longitude: '          + position.coords.longitude             + '<br />' +
         'Altitude: '           + position.coords.altitude              + '<br />' +
         'Accuracy: '           + position.coords.accuracy              + '<br />' +
@@ -116,6 +250,6 @@ var geoOnError = function(error) {
         'message: ' + error.message + '\n');
 }
 
-geolocationBtn.live('click', function(){
+$('#geolocationBtn').live('click', function(){
     navigator.geolocation.getCurrentPosition(geoOnSuccess, geoOnError, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
 });
